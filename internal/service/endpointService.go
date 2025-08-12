@@ -1,31 +1,38 @@
 package service
 
 import (
+	"github.com/Segian/little-sender/internal/config"
+	"github.com/Segian/little-sender/internal/dto"
 	"github.com/Segian/little-sender/internal/model"
+
+	"github.com/google/uuid"
 )
 
-func NewEndpointService(endpointModel model.EndpointModel) model.EndpointModel {
+func NewEndpointService(EndpointDto dto.EndpointDto) (dto.EndpointResponseDto, error) {
 
 	var endpointToAdd model.EndpointModel
-	endpointToAdd.ID = endpointModel.ID
-	endpointToAdd.Name = endpointModel.Name
-	endpointToAdd.Headers = endpointModel.Headers
-	endpointToAdd.URL = endpointModel.URL
 
-	if endpointModel.Bodies != nil {
-		endpointToAdd.Bodies = make([]model.BodyModel, len(endpointModel.Bodies))
-		for i, body := range endpointModel.Bodies {
-			endpointToAdd.Bodies[i] = model.BodyModel{
-				ID:         body.ID,
-				EndpointID: body.EndpointID,
-				Body:       body.Body,
-			}
+	endpointToAdd.ID = uuid.New()
+	endpointToAdd.Name = EndpointDto.Name
+	endpointToAdd.Headers = EndpointDto.Headers
+	endpointToAdd.URL = EndpointDto.URL
+
+	if EndpointDto.Body != nil {
+		endpointToAdd.Body = &model.BodyModel{
+			Data: EndpointDto.Body,
 		}
 	}
 
-	if endpointToAdd.Bodies == nil {
-		endpointToAdd.Bodies = []model.BodyModel{} // Ensure it's initialized even if empty
+	if err := config.DB.Create(&endpointToAdd).Error; err != nil {
+		return dto.EndpointResponseDto{}, err
 	}
 
-	return endpointToAdd
+	var endpointResponse dto.EndpointResponseDto
+	endpointResponse.ID = endpointToAdd.ID
+	endpointResponse.Name = endpointToAdd.Name
+	endpointResponse.Headers = endpointToAdd.Headers
+	endpointResponse.URL = endpointToAdd.URL
+	endpointResponse.Body = endpointToAdd.Body.Data
+
+	return endpointResponse, nil
 }

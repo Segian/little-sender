@@ -1,7 +1,8 @@
 package model
 
+import "gorm.io/datatypes"
+
 type BodyModel struct {
-	ID         string `json:"id"`
-	EndpointID string `json:"endpoint_id" gorm:"index;not null"`
-	Body       string `json:"body"`
+	EndpointID string         `json:"-" gorm:"primaryKey;not null"` //clave primaria y foranea
+	Data       datatypes.JSON `json:"body" gorm:"type:json"`
 }

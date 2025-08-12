@@ -1,9 +1,13 @@
 package model
 
+import (
+	"github.com/google/uuid"
+)
+
 type EndpointModel struct {
-	ID      string      `json:"-" gorm:"primaryKey; autoIncrement:false"`
-	Name    string      `json:"name"`
-	Headers string      `json:"headers,omitempty" gorm:"optional"`
-	URL     string      `json:"url"`
-	Bodies  []BodyModel `json:"-" gorm:"foreignKey:EndpointID;constraint:OnDelete:CASCADE;"`
+	ID      uuid.UUID  `json:"id" gorm:"type:uuid;primaryKey;"`
+	Name    string     `json:"name"`
+	Headers string     `json:"headers,omitempty" gorm:"optional"`
+	URL     string     `json:"url"`
+	Body    *BodyModel `json:"body,omitempty" gorm:"foreignKey:EndpointID;constraint:OnDelete:CASCADE;"`
 }
