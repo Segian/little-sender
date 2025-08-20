@@ -18,5 +18,9 @@ func NewRouter() *gin.Engine {
 	{
 		health.GET("", HealthCheck)
 	}
+	execution := router.Group("/execution")
+	{
+		execution.GET("/:id", ExecuteOneEndpoint)
+	}
 	return router
 }

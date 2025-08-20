@@ -24,5 +24,6 @@ func InitDatabase() error {
 func migrate() error {
 	DB.AutoMigrate(&model.BodyModel{})
 	DB.AutoMigrate(&model.EndpointModel{})
+	DB.AutoMigrate(&model.HistoryModel{})
 	return nil
 }
