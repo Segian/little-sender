@@ -4,15 +4,16 @@ import (
 	"github.com/Segian/little-sender/internal/config"
 	"github.com/Segian/little-sender/internal/model"
 	"github.com/Segian/little-sender/internal/model/dto"
+	"github.com/Segian/little-sender/internal/util"
 
 	"github.com/google/uuid"
 )
 
 func fillEndpointModel(endpointModel *model.EndpointModel, endpointDto dto.EndpointDtoUpdate) {
-	endpointModel.Name = endpointDto.Name
-	endpointModel.Headers = endpointDto.Headers
-	endpointModel.URL = endpointDto.URL
-	endpointModel.Method = endpointDto.Method
+	endpointModel.Name = util.StringIfNotEmpty(endpointDto.Name, endpointModel.Name)
+	endpointModel.Headers = util.JsonIfNotEmpty(endpointDto.Headers, endpointModel.Headers)
+	endpointModel.URL = util.StringIfNotEmpty(endpointDto.URL, endpointModel.URL)
+	endpointModel.Method = util.StringIfNotEmpty(endpointDto.Method, endpointModel.Method)
 	if endpointDto.Body != nil {
 		endpointModel.Body = &model.BodyModel{Data: endpointDto.Body}
 	} else {
@@ -59,6 +60,8 @@ func NewEndpointService(EndpointDto dto.EndpointDto) (dto.EndpointResponseDto, e
 
 	endpointToAdd := endpointDtoToModel(EndpointDto)
 
+	util.MethodToUpper(&endpointToAdd.Method)
+
 	if err := config.DB.Create(&endpointToAdd).Error; err != nil {
 		return dto.EndpointResponseDto{}, err
 	}
@@ -99,7 +102,11 @@ func UpdateEndpoint(id uuid.UUID, endpointDto dto.EndpointDtoUpdate) (dto.Endpoi
 	if err := config.DB.First(&endpoint, id).Error; err != nil {
 		return dto.EndpointResponseDto{}, err
 	}
+	if endpointDto.Method != "" {
+		util.MethodToUpper(&endpointDto.Method)
+	}
 	fillEndpointModel(&endpoint, endpointDto)
+
 	if err := config.DB.Save(&endpoint).Error; err != nil {
 		return dto.EndpointResponseDto{}, err
 	}

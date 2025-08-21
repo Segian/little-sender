@@ -18,7 +18,6 @@ func ExecuteEndpoint(endpointID uuid.UUID) (model.HistoryModel, error) {
 	if err := config.DB.First(&endpoint, endpointID).Error; err != nil {
 		return model.HistoryModel{}, err
 	}
-	var body model.BodyModel
 	if err := config.DB.Preload("Body").First(&endpoint, endpointID).Error; err != nil {
 		return model.HistoryModel{}, err
 	}
@@ -26,8 +25,8 @@ func ExecuteEndpoint(endpointID uuid.UUID) (model.HistoryModel, error) {
 	client := &http.Client{}
 	var reqBody *bytes.Reader
 
-	if (endpoint.Method == http.MethodPost || endpoint.Method == http.MethodPut) && body.Data != nil {
-		reqBody = bytes.NewReader(body.Data)
+	if (endpoint.Method == http.MethodPost || endpoint.Method == http.MethodPut) && endpoint.Body.Data != nil {
+		reqBody = bytes.NewReader(endpoint.Body.Data)
 	} else {
 		reqBody = bytes.NewReader([]byte{})
 	}
@@ -81,4 +80,12 @@ func ExecuteEndpoint(endpointID uuid.UUID) (model.HistoryModel, error) {
 	}
 
 	return addHistory, nil
+}
+
+func GetHistoryByEndpointID(endpointID uuid.UUID) ([]model.HistoryModel, error) {
+	var history []model.HistoryModel
+	if err := config.DB.Where("endpoint_id = ?", endpointID).Find(&history).Error; err != nil {
+		return nil, err
+	}
+	return history, nil
 }

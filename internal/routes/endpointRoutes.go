@@ -5,15 +5,28 @@ import (
 
 	"github.com/Segian/little-sender/internal/model/dto"
 	"github.com/Segian/little-sender/internal/service"
+	"github.com/Segian/little-sender/internal/util"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
+
+func sendErrorIfMethodInvalid(context *gin.Context, method string) bool {
+	if !util.ValidateMethod(method) {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid HTTP method"})
+		return true
+	}
+	return false
+}
 
 func NewEndpoint(context *gin.Context) {
 	var endpoint dto.EndpointDto
 
 	if err := context.ShouldBindJSON(&endpoint); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	if sendErrorIfMethodInvalid(context, endpoint.Method) {
 		return
 	}
 
@@ -64,6 +77,10 @@ func UpdateEndpoint(context *gin.Context) {
 	var endpointDto dto.EndpointDtoUpdate
 	if err := context.ShouldBindJSON(&endpointDto); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	if endpointDto.Method != "" && sendErrorIfMethodInvalid(context, endpointDto.Method) {
 		return
 	}
 
