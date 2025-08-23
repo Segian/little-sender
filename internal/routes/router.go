@@ -1,11 +1,13 @@
 package routes
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func NewRouter() *gin.Engine {
 	router := gin.Default()
+	router.Use(cors.Default())
 	endpoint := router.Group("/endpoint")
 	{
 		endpoint.POST("", NewEndpoint)
