@@ -8,7 +8,8 @@ import (
 func NewRouter() *gin.Engine {
 	router := gin.Default()
 	router.Use(cors.Default())
-	endpoint := router.Group("/endpoint")
+	api := router.Group("/api")
+	endpoint := api.Group("/endpoint")
 	{
 		endpoint.POST("", NewEndpoint)
 		endpoint.GET("", GetEndpoints)
