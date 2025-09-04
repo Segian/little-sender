@@ -1,0 +1,37 @@
+.nav-links {
+  float: right;
+}
+
+.logo {
+  padding: 12px 16px;
+}
+
+.nav-logo {
+  padding-bottom: 12px;
+  text-decoration: none;
+  color: inherit;
+  font-weight: bold;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.3s;
+}
+
+.nav-logo:hover {
+  border-bottom: 2px solid currentColor;
+}
+
+.NavBton {
+  padding: 12px 16px;
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.3s;
+}
+
+.NavBton:hover {
+  border-bottom: 2px solid currentColor;
+}
+
+.active {
+  font-weight: bold;
+  color: #0070f3;
+}

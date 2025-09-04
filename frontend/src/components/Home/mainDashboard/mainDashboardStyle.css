@@ -1,0 +1,10 @@
+.table-container {
+  border-radius: 20px;
+  padding: 50px;
+}
+
+.titulo {
+  text-align: center;
+  color: #c4c2c2;
+  margin-bottom: 20px;
+}
