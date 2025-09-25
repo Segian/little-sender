@@ -1,5 +1,6 @@
 //for Testing purpose only
 import EndpointEditorComponent from "./Endpoint/endpointEditor/endpointEditorComponent";
+import EndpointPickerComponent from "./Endpoint/endpointPicker/endpointPicker";
 
 function componentViewer() {
     return (
